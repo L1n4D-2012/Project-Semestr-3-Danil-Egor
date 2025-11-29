@@ -33,6 +33,17 @@
 
 # Visual Studio cache directory
 .vs/
+.idea/
+
+# Rider
+.idea/
+*.sln
+*.csproj
+*.unityproj
+*.user
+*.pidb
+*.booproj
+*.svd
 
 # Gradle cache directory
 .gradle/
