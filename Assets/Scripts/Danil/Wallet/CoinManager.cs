@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using TMPro;
 public class CoinManager : MonoBehaviour
@@ -8,6 +9,11 @@ public class CoinManager : MonoBehaviour
 
     public int coins = 0;
 
+    private void Start()
+    {
+       
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -15,12 +21,13 @@ public class CoinManager : MonoBehaviour
         else
             Destroy(gameObject);
         
-        coinText.text = coins.ToString();
+       
     }
 
     public void AddCoin(int amount)
     {
         coins += amount;
         Debug.Log("Coins: " + coins);
+         
     }
 }
