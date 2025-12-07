@@ -368,7 +368,7 @@ Transform:
   m_GameObject: {fileID: 5411837551595320658}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -5.239235, y: 0, z: -3.4539323}
   m_LocalScale: {x: 6, y: 0.1, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -389,11 +389,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPoints:
   - {fileID: 181099949963487433}
+  - {fileID: 48471762798344307}
+  - {fileID: 5141526076073336513}
   leftDecorPoints:
-  - {fileID: 0}
+  - {fileID: 627122409645984007}
   rightDecorPoints:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 2323011368678070226}
   jumpableObstacles:
   - {fileID: 4311010213305465634, guid: 84062c9556b3cef4f8aa9a210cba155b, type: 3}
   - {fileID: 6251666189375065463, guid: d4f40363aa44ea649ac792f348b8c36a, type: 3}

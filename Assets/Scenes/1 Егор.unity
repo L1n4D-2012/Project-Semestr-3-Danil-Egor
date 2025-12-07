@@ -183,6 +183,9 @@ MonoBehaviour:
   roadPrefab: {fileID: 5411837551595320658, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
   numberOfTiles: 10
   roadLength: 10
+  startSpeed: 15
+  maxSpeed: 40
+  speedIncreaseRate: 0.5
 --- !u!1 &945712323
 GameObject:
   m_ObjectHideFlags: 0
@@ -824,6 +827,83 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1688369656}
   m_CullTransparentMesh: 1
+--- !u!1001 &2856707597130823183
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.239235
+      objectReference: {fileID: 0}
+    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.4539323
+      objectReference: {fileID: 0}
+    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5411837551595320658, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: m_Name
+      value: Road_Root
+      objectReference: {fileID: 0}
+    - target: {fileID: 7813603283417156083, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: decorPrefabs.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7813603283417156083, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: decorPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 8912780160936368583, guid: e862a2795adc9564f92160c9ccf84f8f, type: 3}
+    - target: {fileID: 7813603283417156083, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: decorPrefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 3362039222649345337, guid: 7aa292b1eb7b05d4c8e8565619505582, type: 3}
+    - target: {fileID: 7813603283417156083, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: decorPrefabs.Array.data[2]
+      value: 
+      objectReference: {fileID: 906118748038649949, guid: c8e29b986b943f548bca7e79c17c6446, type: 3}
+    - target: {fileID: 7813603283417156083, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+      propertyPath: decorPrefabs.Array.data[3]
+      value: 
+      objectReference: {fileID: 7559552832035831326, guid: 48e46d420090e594999eb1d49cfe7a41, type: 3}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -834,3 +914,4 @@ SceneRoots:
   - {fileID: 1231424791}
   - {fileID: 975290406}
   - {fileID: 288123694}
+  - {fileID: 2856707597130823183}
