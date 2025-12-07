@@ -15,12 +15,14 @@ public class RoadTile : MonoBehaviour
 
     void SpawnRandomObstacle()
     {
+        if (spawnPoints.Length == 0 || obstaclePrefabs.Length == 0) return;
+
         int randomPointIndex = Random.Range(0, spawnPoints.Length);
         Transform chosenPoint = spawnPoints[randomPointIndex];
 
         int randomObstacleIndex = Random.Range(0, obstaclePrefabs.Length);
         GameObject chosenObstacle = obstaclePrefabs[randomObstacleIndex];
-
-        Instantiate(chosenObstacle, chosenPoint.position, chosenPoint.rotation, transform);
+        GameObject spawnedObj = Instantiate(chosenObstacle, chosenPoint.position, chosenObstacle.transform.rotation, null);
+        spawnedObj.transform.SetParent(transform, true);
     }
 }

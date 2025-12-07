@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class SimpleRoadSpawner : MonoBehaviour
 {
+    [Header("Настройки")]
     public GameObject roadPrefab;
     public int numberOfTiles = 10;
     public float roadLength = 30f;
 
-    private float currentZPos = 0;
+    private float currentZPos = 0; 
 
     void Start()
     {
@@ -18,6 +19,8 @@ public class SimpleRoadSpawner : MonoBehaviour
 
     public void SpawnNextTile()
     {
+        if (roadPrefab == null) return;
+
         Instantiate(roadPrefab, new Vector3(0, 0, currentZPos), Quaternion.identity);
         currentZPos += roadLength;
     }
