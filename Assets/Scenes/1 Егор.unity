@@ -182,7 +182,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roadPrefab: {fileID: 5411837551595320658, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
   numberOfTiles: 10
-  roadLength: 10
+  roadLength: 18
   startSpeed: 15
   maxSpeed: 40
   speedIncreaseRate: 0.5
@@ -509,7 +509,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 34.6
+  field of view: 62.4
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -535,13 +535,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1359244672}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.07302868, y: -0, z: -0, w: 0.99732983}
-  m_LocalPosition: {x: 0, y: 2.466, z: -10}
+  m_LocalRotation: {x: 0.09700455, y: -0, z: -0, w: 0.99528396}
+  m_LocalPosition: {x: 0, y: 3.28, z: -5.19}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 8.376, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 11.133, y: 0, z: 0}
 --- !u!1 &1464695179
 GameObject:
   m_ObjectHideFlags: 0
@@ -660,7 +660,7 @@ Transform:
   m_GameObject: {fileID: 1464695179}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.92, z: 0}
+  m_LocalPosition: {x: 0, y: 1.38, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -827,83 +827,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1688369656}
   m_CullTransparentMesh: 1
---- !u!1001 &2856707597130823183
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -5.239235
-      objectReference: {fileID: 0}
-    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -3.4539323
-      objectReference: {fileID: 0}
-    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 73100143440155408, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5411837551595320658, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: m_Name
-      value: Road_Root
-      objectReference: {fileID: 0}
-    - target: {fileID: 7813603283417156083, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: decorPrefabs.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 7813603283417156083, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: decorPrefabs.Array.data[0]
-      value: 
-      objectReference: {fileID: 8912780160936368583, guid: e862a2795adc9564f92160c9ccf84f8f, type: 3}
-    - target: {fileID: 7813603283417156083, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: decorPrefabs.Array.data[1]
-      value: 
-      objectReference: {fileID: 3362039222649345337, guid: 7aa292b1eb7b05d4c8e8565619505582, type: 3}
-    - target: {fileID: 7813603283417156083, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: decorPrefabs.Array.data[2]
-      value: 
-      objectReference: {fileID: 906118748038649949, guid: c8e29b986b943f548bca7e79c17c6446, type: 3}
-    - target: {fileID: 7813603283417156083, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
-      propertyPath: decorPrefabs.Array.data[3]
-      value: 
-      objectReference: {fileID: 7559552832035831326, guid: 48e46d420090e594999eb1d49cfe7a41, type: 3}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -914,4 +837,3 @@ SceneRoots:
   - {fileID: 1231424791}
   - {fileID: 975290406}
   - {fileID: 288123694}
-  - {fileID: 2856707597130823183}
