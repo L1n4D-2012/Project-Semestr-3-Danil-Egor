@@ -4,50 +4,42 @@ using UnityEngine;
 public class LaneRunnerRB : MonoBehaviour
 {
     [Header("Lane Settings")]
-    public float laneDistance = 2f;      // Відстань між смугами
-    public float laneSwitchSpeed = 10f;  // Плавність переміщення
+    public float laneDistance = 2f;
+    public float laneSwitchSpeed = 12f;
 
-    private int currentLane = 1;         // 0 = ліво, 1 = центр, 2 = право
-    private Vector3 targetPos;
+    private int currentLane = 1; // 0 = left, 1 = center, 2 = right
+    private float targetX;
 
     [Header("Jump Settings")]
-    public float jumpForce = 8f;         // сила підйому
-    public float hoverTime = 0.18f;      // скільки висить у повітрі
-    public float fallImpulse = 18f;      // імпульс вниз після hover
+    public float jumpForce = 8f;
+    public float hoverTime = 0.18f;
+    public float fallImpulse = 18f;
+    public float groundY = 0f;
 
-    private bool isJumping = false;
-    private bool isHovering = false;
-    private float hoverTimer = 0f;
+    private bool isJumping;
+    private bool isHovering;
+    private float hoverTimer;
 
     private Rigidbody rb;
 
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody>();
-
-        // блокуємо повороти, щоб не падала модель
         rb.freezeRotation = true;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
 
-        // старт — середня смуга
         UpdateLaneTarget();
     }
 
+    // -----------------------
+    // INPUT
+    // -----------------------
     void Update()
     {
-        HandleInput();
-        HandleLaneMovement();
-        HandleHoverAndFall();
-    }
-
-    // -----------------------
-    //        INPUT
-    // -----------------------
-    private void HandleInput()
-    {
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
             MoveLeft();
 
-        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
             MoveRight();
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
@@ -55,7 +47,16 @@ public class LaneRunnerRB : MonoBehaviour
     }
 
     // -----------------------
-    //     LANES SYSTEM
+    // PHYSICS
+    // -----------------------
+    void FixedUpdate()
+    {
+        HandleLaneMovement();
+        HandleHoverAndFall();
+    }
+
+    // -----------------------
+    // LANES
     // -----------------------
     void MoveLeft()
     {
@@ -77,20 +78,18 @@ public class LaneRunnerRB : MonoBehaviour
 
     void UpdateLaneTarget()
     {
-        float x = (currentLane - 1) * laneDistance;
-        targetPos = new Vector3(x, transform.position.y, transform.position.z);
+        targetX = (currentLane - 1) * laneDistance;
     }
 
     void HandleLaneMovement()
     {
-        // рухаємо лише по X (rigidbody не чіпаємо)
-        Vector3 pos = transform.position;
-        pos.x = Mathf.Lerp(pos.x, targetPos.x, Time.deltaTime * laneSwitchSpeed);
-        transform.position = pos;
+        Vector3 pos = rb.position;
+        float newX = Mathf.Lerp(pos.x, targetX, Time.fixedDeltaTime * laneSwitchSpeed);
+        rb.MovePosition(new Vector3(newX, pos.y, pos.z));
     }
 
     // -----------------------
-    //          JUMP
+    // JUMP
     // -----------------------
     void Jump()
     {
@@ -98,15 +97,9 @@ public class LaneRunnerRB : MonoBehaviour
 
         isJumping = true;
 
-        // очищаємо вертикальний рух (важливо!)
-        Vector3 v = rb.velocity;
-        v.y = 0;
-        rb.velocity = v;
-
-        // підйом
+        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
-        // стартуємо зависання
         hoverTimer = hoverTime;
         isHovering = true;
     }
@@ -115,28 +108,22 @@ public class LaneRunnerRB : MonoBehaviour
     {
         if (!isJumping) return;
 
-        // коли зависаємо — "заморозити" падіння
         if (isHovering)
         {
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-            hoverTimer -= Time.deltaTime;
+            hoverTimer -= Time.fixedDeltaTime;
 
-            if (hoverTimer <= 0)
+            if (hoverTimer <= 0f)
             {
                 isHovering = false;
-
-                // тут даємо різкий імпульс вниз
                 rb.AddForce(Vector3.down * fallImpulse, ForceMode.Impulse);
             }
         }
 
-        // якщо приземлився
-        if (transform.position.y <= 0.05f)
+        
+        if (rb.position.y <= groundY + 0.05f && rb.velocity.y <= 0f)
         {
-            Vector3 p = transform.position;
-            p.y = 0;
-            transform.position = p;
-
+            rb.MovePosition(new Vector3(rb.position.x, groundY, rb.position.z));
             isJumping = false;
             isHovering = false;
         }
