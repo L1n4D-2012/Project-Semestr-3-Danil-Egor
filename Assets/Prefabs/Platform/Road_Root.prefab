@@ -189,16 +189,21 @@ MonoBehaviour:
   - {fileID: 4311010213305465634, guid: 84062c9556b3cef4f8aa9a210cba155b, type: 3}
   - {fileID: 6251666189375065463, guid: d4f40363aa44ea649ac792f348b8c36a, type: 3}
   - {fileID: 2051354519210185303, guid: bd54396f614833c4aac609531580219e, type: 3}
+  - {fileID: 158352753535455414, guid: 66498b191d3c64e4ea56d4ed50eabbbd, type: 3}
+  - {fileID: 2451739127815772679, guid: 0fcf5ed4320cbf34eb528faecdc7565d, type: 3}
   slidableObstacles: []
-  impassableObstacles: []
-  carPrefabs:
-  - {fileID: 899505247492489310, guid: 52e3f6297379ffa48954392c6d79ef4e, type: 3}
-  carSpawnChance: 10
+  impassableObstacles:
+  - {fileID: 4721099002046040616, guid: aa3aa302614b5ef43b6363676a43bee0, type: 3}
+  - {fileID: 5767081827295946613, guid: 3fd738b809e48ae45a577cea6555080e, type: 3}
+  - {fileID: 5954924780699318257, guid: dc8bc5fb65821344f912c3efa8f88ef7, type: 3}
   decorPrefabs:
   - {fileID: 3362039222649345337, guid: 7aa292b1eb7b05d4c8e8565619505582, type: 3}
   - {fileID: 8912780160936368583, guid: e862a2795adc9564f92160c9ccf84f8f, type: 3}
   - {fileID: 906118748038649949, guid: c8e29b986b943f548bca7e79c17c6446, type: 3}
   - {fileID: 7559552832035831326, guid: 48e46d420090e594999eb1d49cfe7a41, type: 3}
+  coinPrefab: {fileID: 8716862881270331998, guid: f20ada6c28f89ff468ed4daa6537bb0a, type: 3}
+  coinSpawnChance: 0.5
+  coinHeightOffset: 1
 --- !u!114 &-2617575309084307169
 MonoBehaviour:
   m_ObjectHideFlags: 0
