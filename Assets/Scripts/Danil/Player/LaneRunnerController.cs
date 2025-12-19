@@ -14,11 +14,15 @@ public class LaneRunnerRB : MonoBehaviour
     public float jumpForce = 8f;
     public float hoverTime = 0.18f;
     public float fallImpulse = 18f;
-    public float groundY = 0f;
 
     private bool isJumping;
     private bool isHovering;
     private float hoverTimer;
+
+    [Header("Ground Check")]
+    public LayerMask groundLayer;
+    public float groundCheckDistance = 0.15f;
+    private bool isGrounded;
 
     private Rigidbody rb;
 
@@ -51,8 +55,22 @@ public class LaneRunnerRB : MonoBehaviour
     // -----------------------
     void FixedUpdate()
     {
+        CheckGround();
         HandleLaneMovement();
         HandleHoverAndFall();
+    }
+
+    // -----------------------
+    // GROUND CHECK
+    // -----------------------
+    void CheckGround()
+    {
+        isGrounded = Physics.Raycast(
+            rb.position + Vector3.up * 0.1f,
+            Vector3.down,
+            groundCheckDistance,
+            groundLayer
+        );
     }
 
     // -----------------------
@@ -93,15 +111,15 @@ public class LaneRunnerRB : MonoBehaviour
     // -----------------------
     void Jump()
     {
-        if (isJumping) return;
+        if (!isGrounded) return;
 
         isJumping = true;
+        isHovering = true;
 
         rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
         hoverTimer = hoverTime;
-        isHovering = true;
     }
 
     void HandleHoverAndFall()
@@ -120,12 +138,22 @@ public class LaneRunnerRB : MonoBehaviour
             }
         }
 
-        
-        if (rb.position.y <= groundY + 0.05f && rb.velocity.y <= 0f)
+        if (isGrounded && rb.velocity.y <= 0f)
         {
-            rb.MovePosition(new Vector3(rb.position.x, groundY, rb.position.z));
             isJumping = false;
             isHovering = false;
         }
+    }
+
+    // -----------------------
+    // DEBUG (OPTIONAL)
+    // -----------------------
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(
+            transform.position + Vector3.up * 0.1f,
+            transform.position + Vector3.down * groundCheckDistance
+        );
     }
 }
