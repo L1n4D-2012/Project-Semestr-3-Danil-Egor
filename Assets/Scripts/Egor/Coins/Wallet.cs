@@ -8,6 +8,9 @@ public class Wallet : MonoBehaviour
     public Text coinText;
     public string labelText = "Coins: ";
 
+    public int coinMultiplier = 1;
+    private float multiplierTimer = 0f;
+
     void Awake()
     {
         if (instance == null)
@@ -24,12 +27,30 @@ public class Wallet : MonoBehaviour
         UpdateUI();
     }
 
+    void Update()
+    {
+        if (multiplierTimer > 0)
+        {
+            multiplierTimer -= Time.deltaTime;
+            if (multiplierTimer <= 0)
+            {
+                coinMultiplier = 1;
+            }
+        }
+    }
+
     public void AddCoin(int amount)
     {
-        coins += amount;
+        coins += amount * coinMultiplier;
         PlayerPrefs.SetInt("Coins", coins);
         PlayerPrefs.Save();
         UpdateUI();
+    }
+
+    public void ActivateDoubleCoins(float duration)
+    {
+        coinMultiplier = 2;
+        multiplierTimer = duration;
     }
 
     public void ResetMoney()

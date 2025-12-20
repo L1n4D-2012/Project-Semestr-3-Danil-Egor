@@ -3,9 +3,8 @@ using UnityEngine;
 
 public class RoadTile : MonoBehaviour
 {
-    [Header("Точки спавна ПРЕГРАД")]
+    [Header("Точки спавна")]
     public Transform[] spawnPoints;
-    [Header("Точки спавна ДЕКОРА (Слева и Справа)")]
     public Transform[] leftDecorPoints;
     public Transform[] rightDecorPoints;
 
@@ -14,12 +13,15 @@ public class RoadTile : MonoBehaviour
     public GameObject[] slidableObstacles;
     public GameObject[] impassableObstacles;
 
-    [Header("Декор (Дома, деревья, столбы)")]
+    [Header("Декор")]
     public GameObject[] decorPrefabs;
 
-    [Header("Монетки")]
+    [Header("Бонусы и Монеты")]
     public GameObject coinPrefab;
+    public GameObject[] powerupPrefabs;
+
     [Range(0f, 1f)] public float coinSpawnChance = 0.5f;
+    [Range(0f, 1f)] public float powerupSpawnChance = 0.05f;
     public float coinHeightOffset = 1.0f;
 
     public void SpawnObstacles(int count)
@@ -31,9 +33,33 @@ public class RoadTile : MonoBehaviour
         if (slidableObstacles != null) allPossibleObstacles.AddRange(slidableObstacles);
         if (impassableObstacles != null) allPossibleObstacles.AddRange(impassableObstacles);
 
-        List<Transform> availablePoints = new List<Transform>(spawnPoints);
+        // ФИЛЬТРАЦИЯ ДУБЛИКАТОВ: Убираем точки с одинаковыми позициями
+        List<Transform> availablePoints = new List<Transform>();
+        List<Vector3> usedPositions = new List<Vector3>();
 
-        if (spawnPoints.Length > 0 && allPossibleObstacles.Count > 0)
+        foreach (var point in spawnPoints)
+        {
+            if (point != null)
+            {
+                bool alreadyExists = false;
+                foreach (var pos in usedPositions)
+                {
+                    if (Vector3.Distance(point.position, pos) < 0.1f)
+                    {
+                        alreadyExists = true;
+                        break;
+                    }
+                }
+
+                if (!alreadyExists)
+                {
+                    usedPositions.Add(point.position);
+                    availablePoints.Add(point);
+                }
+            }
+        }
+
+        if (availablePoints.Count > 0 && allPossibleObstacles.Count > 0)
         {
             int maxObstacles = availablePoints.Count > 1 ? availablePoints.Count - 1 : availablePoints.Count;
             int obstaclesToSpawn = Mathf.Clamp(count, 0, maxObstacles);
@@ -54,18 +80,24 @@ public class RoadTile : MonoBehaviour
             }
         }
 
-        if (coinPrefab != null)
+        foreach (Transform point in availablePoints)
         {
-            foreach (Transform point in availablePoints)
-            {
-                if (Random.value < coinSpawnChance)
-                {
-                    Vector3 coinPos = point.position;
-                    coinPos.y += coinHeightOffset;
+            float roll = Random.value;
 
-                    GameObject spawnedCoin = Instantiate(coinPrefab, coinPos, coinPrefab.transform.rotation, null);
-                    spawnedCoin.transform.SetParent(transform, true);
-                }
+            if (powerupPrefabs.Length > 0 && roll < powerupSpawnChance)
+            {
+                GameObject powerup = powerupPrefabs[Random.Range(0, powerupPrefabs.Length)];
+                Vector3 pos = point.position;
+                pos.y += 1f;
+                GameObject spawned = Instantiate(powerup, pos, powerup.transform.rotation, null);
+                spawned.transform.SetParent(transform, true);
+            }
+            else if (coinPrefab != null && roll < (coinSpawnChance + powerupSpawnChance))
+            {
+                Vector3 coinPos = point.position;
+                coinPos.y += coinHeightOffset;
+                GameObject spawnedCoin = Instantiate(coinPrefab, coinPos, coinPrefab.transform.rotation, null);
+                spawnedCoin.transform.SetParent(transform, true);
             }
         }
     }

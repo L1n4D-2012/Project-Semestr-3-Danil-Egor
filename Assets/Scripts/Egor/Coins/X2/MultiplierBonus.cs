@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class Coins : MonoBehaviour
+public class MultiplierBonus : MonoBehaviour
 {
-    public int value = 1;
+    public float duration = 10f;
 
     void OnTriggerEnter(Collider other)
     {
@@ -10,9 +10,9 @@ public class Coins : MonoBehaviour
         {
             if (Wallet.instance != null)
             {
-                Wallet.instance.AddCoin(value);
+                Wallet.instance.ActivateDoubleCoins(duration);
+                Destroy(gameObject);
             }
-            Destroy(gameObject);
         }
     }
 }

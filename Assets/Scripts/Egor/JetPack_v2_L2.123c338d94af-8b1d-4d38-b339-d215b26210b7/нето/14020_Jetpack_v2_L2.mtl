@@ -1,0 +1,86 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 19.03.2012 12:05:52
+
+newmtl 14020JetPack_jet
+	Ns 20.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 1.0000 1.0000 1.0000
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.1980 0.1980 0.1980
+	Ke 0.0000 0.0000 0.0000
+	map_Ka 14020JetPack_jet_diffuse.jpg
+	map_Kd 14020JetPack_jet_diffuse.jpg
+
+newmtl 14020JetPack_wings
+	Ns 24.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 1.0000 1.0000 1.0000
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.1350 0.1350 0.1350
+	Ke 0.0000 0.0000 0.0000
+	map_Ka 14020JetPack_wings_diffuse.jpg
+	map_Kd 14020JetPack_wings_diffuse.jpg
+
+newmtl 14020JetPack_seat
+	Ns 39.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 1.0000 1.0000 1.0000
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.1890 0.1890 0.1890
+	Ke 0.0000 0.0000 0.0000
+	map_Ka 14020JetPack_seat_diffuse.jpg
+	map_Kd 14020JetPack_seat_diffuse.jpg
+
+newmtl 14020JetPack_joystick
+	Ns 56.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 1.0000 1.0000 1.0000
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.1980 0.1980 0.1980
+	Ke 0.0000 0.0000 0.0000
+	map_Ka 14020JetPack_joystick_diffuse.jpg
+	map_Kd 14020JetPack_joystick_diffuse.jpg
+
+newmtl 14020JetPack_safety
+	Ns 44.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 1.0000 1.0000 1.0000
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.3870 0.3870 0.3870
+	Ke 0.0000 0.0000 0.0000
+	map_Ka 14020JetPack_safety_diffuse.jpg
+	map_Kd 14020JetPack_safety_diffuse.jpg
+
+newmtl 14020JetPack_backjet
+	Ns 31.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 1.0000 1.0000 1.0000
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.1800 0.1800 0.1800
+	Ke 0.0000 0.0000 0.0000
+	map_Ka 14020JetPack_backjet_diffuse.jpg
+	map_Kd 14020JetPack_backjet_diffuse.jpg
