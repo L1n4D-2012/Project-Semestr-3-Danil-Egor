@@ -181,7 +181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d050d3f2decf5648a5da68e1f250185, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roadPrefab: {fileID: 5411837551595320658, guid: 2410244d71e218848a21b9a0823240e2, type: 3}
+  roadPrefab: {fileID: 7400361871045034367, guid: 50a9543ab63b827458dcb84f8c3c5929, type: 3}
   numberOfTiles: 10
   roadLength: 17
   startSpeed: 15
@@ -549,6 +549,7 @@ GameObject:
   - component: {fileID: 1359244675}
   - component: {fileID: 1359244674}
   - component: {fileID: 1359244673}
+  - component: {fileID: 1359244676}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -630,6 +631,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 11.133, y: 0, z: 0}
+--- !u!114 &1359244676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1359244672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04d8f6f017a845d4c90118f6f5fbc572, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1464695184}
+  smoothSpeed: 5
 --- !u!1 &1464695179
 GameObject:
   m_ObjectHideFlags: 0
@@ -646,6 +661,7 @@ GameObject:
   - component: {fileID: 1464695185}
   - component: {fileID: 1464695186}
   - component: {fileID: 1464695187}
+  - component: {fileID: 1464695188}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -668,9 +684,9 @@ MonoBehaviour:
   laneDistance: 2
   laneSwitchSpeed: 10
   jumpForce: 8
-  hoverTime: 0.18
-  fallImpulse: 18
-  groundY: 0
+  extraGravity: 20
+  jetpackHeight: 7
+  jetpackRiseSpeed: 5
 --- !u!65 &1464695181
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -814,6 +830,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isShieldActive: 0
   shieldVisual: {fileID: 1851903850}
+--- !u!114 &1464695188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464695179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb5c37a21c1b4a04c813a446e931ff87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isFlying: 0
+  duration: 5
 --- !u!1001 &1725174299
 PrefabInstance:
   m_ObjectHideFlags: 0

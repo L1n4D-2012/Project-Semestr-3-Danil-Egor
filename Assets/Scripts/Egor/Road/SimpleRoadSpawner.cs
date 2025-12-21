@@ -33,24 +33,33 @@ public class SimpleRoadSpawner : MonoBehaviour
         {
             globalSpeed += speedIncreaseRate * Time.deltaTime;
         }
+    }
 
+    void LateUpdate()
+    {
         if (activeRoads.Count > 0)
         {
             GameObject firstTile = activeRoads[0];
 
-            if (firstTile.transform.position.z < -roadLength)
+            if (firstTile.transform.position.z < -roadLength - 10f)
             {
-                GameObject lastTile = activeRoads[activeRoads.Count - 1];
-                float newSpawnZ = lastTile.transform.position.z + roadLength;
-
-                int difficulty = CalculateDifficulty();
-
-                SpawnTile(newSpawnZ, difficulty);
-
-                Destroy(firstTile);
-                activeRoads.RemoveAt(0);
+                RecycleTile();
             }
         }
+    }
+
+    void RecycleTile()
+    {
+        GameObject oldTile = activeRoads[0];
+        GameObject lastTile = activeRoads[activeRoads.Count - 1];
+
+        float newSpawnZ = lastTile.transform.position.z + roadLength;
+
+        activeRoads.RemoveAt(0);
+        Destroy(oldTile);
+
+        int difficulty = CalculateDifficulty();
+        SpawnTile(newSpawnZ, difficulty);
     }
 
     int CalculateDifficulty()
@@ -64,8 +73,6 @@ public class SimpleRoadSpawner : MonoBehaviour
     {
         GameObject newRoad = Instantiate(roadPrefab, new Vector3(0, 0, zPos), Quaternion.identity);
         activeRoads.Add(newRoad);
-
-        // Эта функция теперь сама вызовет и SpawnDecor внутри себя
         newRoad.GetComponent<RoadTile>().SpawnObstacles(obstacleCount);
     }
 }

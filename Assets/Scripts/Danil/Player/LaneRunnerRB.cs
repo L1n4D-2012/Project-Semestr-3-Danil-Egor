@@ -7,33 +7,40 @@ public class LaneRunnerRB : MonoBehaviour
     public float laneDistance = 2f;
     public float laneSwitchSpeed = 12f;
 
-    private int currentLane = 1; // 0 = left, 1 = center, 2 = right
+    private int currentLane = 1;
     private float targetX;
 
     [Header("Jump Settings")]
-    public float jumpForce = 8f;
-    public float hoverTime = 0.18f;
-    public float fallImpulse = 18f;
-    public float groundY = 0f;
+    public float jumpForce = 7f;
+    public float extraGravity = 25f;
+
+    [Header("Jetpack Settings")]
+    public float jetpackHeight = 7f;
+    public float jetpackRiseSpeed = 5f;
 
     private bool isJumping;
-    private bool isHovering;
-    private float hoverTimer;
-
     private Rigidbody rb;
+    private float distToGround;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.useGravity = true;
+
+        if (GetComponent<Collider>() != null)
+        {
+            distToGround = GetComponent<Collider>().bounds.extents.y;
+        }
+        else
+        {
+            distToGround = 1f;
+        }
 
         UpdateLaneTarget();
     }
 
-    // -----------------------
-    // INPUT
-    // -----------------------
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
@@ -42,22 +49,29 @@ public class LaneRunnerRB : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
             MoveRight();
 
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
-            Jump();
+        bool isFlying = PlayerJetpack.instance != null && PlayerJetpack.instance.isFlying;
+
+        if (!isFlying)
+        {
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+                Jump();
+        }
     }
 
-    // -----------------------
-    // PHYSICS
-    // -----------------------
     void FixedUpdate()
     {
         HandleLaneMovement();
-        HandleHoverAndFall();
+
+        if (PlayerJetpack.instance != null && PlayerJetpack.instance.isFlying)
+        {
+            HandleJetpackMovement();
+        }
+        else
+        {
+            HandleGravityAndLanding();
+        }
     }
 
-    // -----------------------
-    // LANES
-    // -----------------------
     void MoveLeft()
     {
         if (currentLane > 0)
@@ -88,44 +102,49 @@ public class LaneRunnerRB : MonoBehaviour
         rb.MovePosition(new Vector3(newX, pos.y, pos.z));
     }
 
-    // -----------------------
-    // JUMP
-    // -----------------------
+    void HandleJetpackMovement()
+    {
+        isJumping = true;
+
+        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+
+        Vector3 pos = rb.position;
+        float newY = Mathf.Lerp(pos.y, jetpackHeight, Time.fixedDeltaTime * jetpackRiseSpeed);
+
+        rb.MovePosition(new Vector3(pos.x, newY, pos.z));
+    }
+
     void Jump()
     {
         if (isJumping) return;
 
-        isJumping = true;
-
-        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-
-        hoverTimer = hoverTime;
-        isHovering = true;
+        if (IsGrounded())
+        {
+            isJumping = true;
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
     }
 
-    void HandleHoverAndFall()
+    void HandleGravityAndLanding()
     {
-        if (!isJumping) return;
-
-        if (isHovering)
+        if (isJumping && rb.velocity.y < 0)
         {
-            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-            hoverTimer -= Time.fixedDeltaTime;
+            rb.AddForce(Vector3.down * extraGravity, ForceMode.Acceleration);
+        }
 
-            if (hoverTimer <= 0f)
+        if (isJumping && rb.velocity.y <= 0.1f)
+        {
+            if (IsGrounded())
             {
-                isHovering = false;
-                rb.AddForce(Vector3.down * fallImpulse, ForceMode.Impulse);
+                isJumping = false;
+                rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             }
         }
+    }
 
-
-        if (rb.position.y <= groundY + 0.05f && rb.velocity.y <= 0f)
-        {
-            rb.MovePosition(new Vector3(rb.position.x, groundY, rb.position.z));
-            isJumping = false;
-            isHovering = false;
-        }
+    bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position, Vector3.down, distToGround + 0.2f);
     }
 }
