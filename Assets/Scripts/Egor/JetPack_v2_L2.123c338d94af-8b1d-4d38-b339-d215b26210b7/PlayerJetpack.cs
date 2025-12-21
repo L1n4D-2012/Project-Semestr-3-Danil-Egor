@@ -29,17 +29,25 @@ public class PlayerJetpack : MonoBehaviour
 
     public void ActivateJetpack()
     {
+        if (isFlying) return;
+
         isFlying = true;
         timer = duration;
 
-        if (CoinMagnet.instance != null)
-        {
-            CoinMagnet.instance.ActivateMagnet(duration);
-        }
+        // --- ВАЖНО: Сбрасываем память дорожки ---
+        // Начинаем строить линию монет с центра (индекс 0), или можно считать полосу игрока
+        RoadTile.lastJetpackLane = 0;
+        // ----------------------------------------
+
+        if (SimpleRoadSpawner.instance != null)
+            SimpleRoadSpawner.instance.ForceUpdateRoads(true);
     }
 
     void StopJetpack()
     {
         isFlying = false;
+
+        if (SimpleRoadSpawner.instance != null)
+            SimpleRoadSpawner.instance.ForceUpdateRoads(false);
     }
 }

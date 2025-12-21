@@ -3,6 +3,11 @@ using UnityEngine;
 
 public class RoadTile : MonoBehaviour
 {
+    // --- СТАТИЧЕСКАЯ ПАМЯТЬ (Общая для всех кусков дороги) ---
+    // 0 = Центр, -1 = Лево, 1 = Право
+    public static int lastJetpackLane = 0;
+    // ---------------------------------------------------------
+
     [Header("Points")]
     public Transform[] spawnPoints;
     public Transform[] leftDecorPoints;
@@ -22,33 +27,100 @@ public class RoadTile : MonoBehaviour
 
     [Header("Settings")]
     public float laneDistance = 2f;
-    public int coinsPerLine = 8;
-    public float coinSpacing = 2.0f;
-    [Range(0f, 1f)] public float powerupSpawnChance = 0.05f;
-
+    public int coinsPerLine = 10;
+    public float coinSpacing = 1.5f;
     public float groundCoinHeight = 1f;
     public float airCoinHeight = 7f;
 
-    public void SpawnObstacles(int count)
+    private List<GameObject> spawnedObjects = new List<GameObject>();
+
+    public void SpawnObstacles(bool isFlying, bool isSafeZone = false)
     {
+        ClearOldObjects();
         SpawnDecor();
 
-        bool isFlying = PlayerJetpack.instance != null && PlayerJetpack.instance.isFlying;
+        if (isSafeZone) return;
 
         if (isFlying)
         {
-            SpawnCoinSnakeInAir();
+            SpawnSmartCoinPath();
         }
         else
         {
             List<int> blockedLanes = new List<int>();
-            SpawnBarriers(count, blockedLanes);
+            SpawnBarriers(blockedLanes);
             SpawnStraightCoinsOnGround(blockedLanes);
-            SpawnPowerups();
+            SpawnPowerups(blockedLanes);
         }
     }
 
-    void SpawnBarriers(int count, List<int> blockedLanes)
+    void ClearOldObjects()
+    {
+        foreach (var obj in spawnedObjects)
+        {
+            if (obj != null) Destroy(obj);
+        }
+        spawnedObjects.Clear();
+    }
+
+    void SpawnSmartCoinPath()
+    {
+        if (coinPrefab == null) return;
+
+        int startLane = lastJetpackLane;
+        int targetLane = startLane;
+
+        // Шанс поворота (50% прямо, 50% поворот)
+        if (Random.value > 0.5f)
+        {
+            if (startLane == 0) targetLane = (Random.value > 0.5f) ? 1 : -1;
+            else targetLane = 0;
+        }
+
+        // --- НАСТРОЙКИ ДЛИНЫ И ПЛОТНОСТИ ---
+        // Увеличиваем кол-во монет, чтобы линия была сплошной
+        // Раньше было 10, ставим 15 или 20, чтобы заполнить ВЕСЬ тайл
+        int coinsCount = 20;
+
+        // Вычисляем шаг так, чтобы монеты равномерно покрыли всю длину тайла (30м)
+        // 30 метров / 20 монет = 1.5 метра между монетами
+        float step = 30f / coinsCount;
+
+        for (int i = 0; i < coinsCount; i++)
+        {
+            // t идет от 0 до 1
+            float t = (float)i / (float)(coinsCount - 1);
+
+            // Плавный переход X
+            float currentLaneX = Mathf.Lerp(startLane * laneDistance, targetLane * laneDistance, t);
+
+            // --- ГЛАВНОЕ ИСПРАВЛЕНИЕ Z (УБИРАЕМ РАЗРЫВЫ) ---
+            // Спавним монеты от самого начала (-15) до самого конца (+15) тайла.
+            // Так как тайлы стоят встык, линии монет тоже состыкуются идеально.
+            float zLocal = -15f + (i * step);
+
+            Vector3 spawnPos = transform.position + new Vector3(currentLaneX, airCoinHeight, zLocal);
+
+            // 20% шанс бонуса на самой последней монете
+            if (i == coinsCount - 1 && Random.value < 0.2f && powerupPrefabs.Length > 0)
+            {
+                GameObject powerup = powerupPrefabs[Random.Range(0, powerupPrefabs.Length)];
+                GameObject obj = Instantiate(powerup, spawnPos, powerup.transform.rotation, transform);
+                obj.transform.localScale = powerup.transform.localScale;
+                spawnedObjects.Add(obj);
+            }
+            else
+            {
+                GameObject coin = Instantiate(coinPrefab, spawnPos, coinPrefab.transform.rotation, transform);
+                coin.transform.localScale = coinPrefab.transform.localScale;
+                spawnedObjects.Add(coin);
+            }
+        }
+
+        lastJetpackLane = targetLane;
+    }
+
+    void SpawnBarriers(List<int> blockedLanes)
     {
         List<GameObject> allObstacles = new List<GameObject>();
         if (jumpableObstacles != null) allObstacles.AddRange(jumpableObstacles);
@@ -58,7 +130,7 @@ public class RoadTile : MonoBehaviour
         if (spawnPoints.Length == 0 || allObstacles.Count == 0) return;
 
         List<Transform> availablePoints = new List<Transform>(spawnPoints);
-        int obstaclesToSpawn = Mathf.Clamp(count, 0, availablePoints.Count - 1);
+        int obstaclesToSpawn = Random.Range(1, 3);
 
         for (int i = 0; i < obstaclesToSpawn; i++)
         {
@@ -72,11 +144,11 @@ public class RoadTile : MonoBehaviour
             if (!blockedLanes.Contains(lane))
             {
                 blockedLanes.Add(lane);
+                GameObject obsPrefab = allObstacles[Random.Range(0, allObstacles.Count)];
+                GameObject obj = Instantiate(obsPrefab, point.position, obsPrefab.transform.rotation, transform);
+                obj.transform.localScale = obsPrefab.transform.localScale;
+                spawnedObjects.Add(obj);
             }
-
-            GameObject obsPrefab = allObstacles[Random.Range(0, allObstacles.Count)];
-            GameObject obj = Instantiate(obsPrefab, point.position, obsPrefab.transform.rotation, transform);
-            obj.transform.localScale = obsPrefab.transform.localScale;
         }
     }
 
@@ -97,62 +169,37 @@ public class RoadTile : MonoBehaviour
 
             for (int i = 0; i < coinsPerLine; i++)
             {
-                float zPos = 2f + (i * coinSpacing);
+                float zPos = -5f + (i * coinSpacing);
                 Vector3 coinPos = transform.position + new Vector3(xPos, groundCoinHeight, zPos);
 
                 GameObject coin = Instantiate(coinPrefab, coinPos, coinPrefab.transform.rotation, transform);
                 coin.transform.localScale = coinPrefab.transform.localScale;
+                spawnedObjects.Add(coin);
             }
         }
     }
 
-    void SpawnCoinSnakeInAir()
-    {
-        if (coinPrefab == null) return;
-
-        int startLane = Random.Range(-1, 2);
-        int endLane = Random.Range(-1, 2);
-
-        while (endLane == startLane) endLane = Random.Range(-1, 2);
-
-        for (int i = 0; i < coinsPerLine; i++)
-        {
-            float t = (float)i / (float)(coinsPerLine - 1);
-            float currentLaneX = Mathf.Lerp(startLane * laneDistance, endLane * laneDistance, t);
-
-            float zPos = 5f + (i * coinSpacing);
-            Vector3 coinPos = transform.position + new Vector3(currentLaneX, airCoinHeight, zPos);
-
-            GameObject coin = Instantiate(coinPrefab, coinPos, coinPrefab.transform.rotation, transform);
-            coin.transform.localScale = coinPrefab.transform.localScale;
-        }
-    }
-
-    void SpawnPowerups()
+    void SpawnPowerups(List<int> blockedLanes)
     {
         if (powerupPrefabs.Length == 0) return;
-        if (Random.value > powerupSpawnChance) return;
+        if (Random.value > 0.15f) return;
 
-        List<Transform> freePoints = new List<Transform>(spawnPoints);
-        if (freePoints.Count > 0)
+        List<int> freeLanes = new List<int>();
+        for (int i = -1; i <= 1; i++)
         {
-            Transform point = freePoints[Random.Range(0, freePoints.Count)];
+            if (!blockedLanes.Contains(i)) freeLanes.Add(i);
+        }
 
-            // Проверка, не занято ли место барьером (грубая)
-            Collider[] hitColliders = Physics.OverlapSphere(point.position, 1f);
-            bool isOccupied = false;
-            foreach (var col in hitColliders)
-            {
-                if (col.gameObject.transform.parent == transform) isOccupied = true;
-            }
+        if (freeLanes.Count > 0)
+        {
+            int lane = freeLanes[Random.Range(0, freeLanes.Count)];
+            float xPos = lane * laneDistance;
 
-            if (!isOccupied)
-            {
-                GameObject powerup = powerupPrefabs[Random.Range(0, powerupPrefabs.Length)];
-                Vector3 pos = point.position + Vector3.up * 1.5f;
-                GameObject obj = Instantiate(powerup, pos, powerup.transform.rotation, transform);
-                obj.transform.localScale = powerup.transform.localScale;
-            }
+            Vector3 pos = transform.position + new Vector3(xPos, 1.5f, 0);
+            GameObject powerup = powerupPrefabs[Random.Range(0, powerupPrefabs.Length)];
+            GameObject obj = Instantiate(powerup, pos, powerup.transform.rotation, transform);
+            obj.transform.localScale = powerup.transform.localScale;
+            spawnedObjects.Add(obj);
         }
     }
 
@@ -167,10 +214,10 @@ public class RoadTile : MonoBehaviour
     {
         foreach (var p in points)
         {
-            if (Random.value > 0.4f)
+            if (p.childCount == 0 && Random.value > 0.4f)
             {
                 GameObject decor = decorPrefabs[Random.Range(0, decorPrefabs.Length)];
-                GameObject obj = Instantiate(decor, p.position, decor.transform.rotation, transform);
+                GameObject obj = Instantiate(decor, p.position, decor.transform.rotation, p);
                 obj.transform.localScale = decor.transform.localScale;
             }
         }
@@ -179,8 +226,9 @@ public class RoadTile : MonoBehaviour
     int GetLaneIndex(Vector3 position)
     {
         float localX = position.x - transform.position.x;
-        if (localX < -1f) return -1;
-        if (localX > 1f) return 1;
+        float threshold = laneDistance / 2f;
+        if (localX < -threshold) return -1;
+        if (localX > threshold) return 1;
         return 0;
     }
 }

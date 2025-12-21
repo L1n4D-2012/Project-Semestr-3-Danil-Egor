@@ -13,16 +13,11 @@ public class Wallet : MonoBehaviour
 
     void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        // ПРОСТОЕ ПРАВИЛО: В новой сцене - новый главный кошелек.
+        // Старый кошелек уничтожился сам при смене сцены, так что конфликтов не будет.
+        instance = this;
 
+        // Загружаем сохраненные данные
         coins = PlayerPrefs.GetInt("Coins", 0);
         UpdateUI();
     }
@@ -63,6 +58,7 @@ public class Wallet : MonoBehaviour
 
     void UpdateUI()
     {
+        // Добавляем проверку на null, чтобы игра не крашилась, даже если текст потеряется
         if (coinText != null)
         {
             coinText.text = labelText + coins.ToString();
