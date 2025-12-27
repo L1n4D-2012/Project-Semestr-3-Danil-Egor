@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 8434514164111804952}
   - component: {fileID: 3353494159434073542}
   - component: {fileID: 4555095233371315535}
+  - component: {fileID: 6822296899990297177}
+  - component: {fileID: 3155579100760348055}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -121,10 +123,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   laneDistance: 2
   laneSwitchSpeed: 5
-  jumpForce: 6
+  jumpForce: 4
   hoverTime: 0.18
-  fallImpulse: 18
-  groundY: 0
+  fallImpulse: 1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  groundCheckDistance: 0.15
+  slideDuration: 0.6
+  slideColliderHeight: 0.7
 --- !u!54 &4555095233371315535
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -152,3 +159,47 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!136 &6822296899990297177
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910692010321895561}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!95 &3155579100760348055
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910692010321895561}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

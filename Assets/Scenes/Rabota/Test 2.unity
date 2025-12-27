@@ -326,12 +326,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3353494159434073542, guid: dfa07a68f57608f49930dca46a5723bb, type: 3}
+      propertyPath: slideDuration
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3353494159434073542, guid: dfa07a68f57608f49930dca46a5723bb, type: 3}
       propertyPath: groundLayer.m_Bits
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3353494159434073542, guid: dfa07a68f57608f49930dca46a5723bb, type: 3}
       propertyPath: groundCheckDistance
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3353494159434073542, guid: dfa07a68f57608f49930dca46a5723bb, type: 3}
+      propertyPath: slideColliderHeight
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7910692010321895561, guid: dfa07a68f57608f49930dca46a5723bb, type: 3}
       propertyPath: m_Name

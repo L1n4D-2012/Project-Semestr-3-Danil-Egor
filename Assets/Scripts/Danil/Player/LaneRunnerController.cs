@@ -1,13 +1,13 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
 public class LaneRunnerRB : MonoBehaviour
 {
     [Header("Lane Settings")]
     public float laneDistance = 2f;
     public float laneSwitchSpeed = 12f;
 
-    private int currentLane = 1; // 0 = left, 1 = center, 2 = right
+    private int currentLane = 1; 
     private float targetX;
 
     [Header("Jump Settings")]
@@ -24,20 +24,29 @@ public class LaneRunnerRB : MonoBehaviour
     public float groundCheckDistance = 0.15f;
     private bool isGrounded;
 
+    [Header("Slide")]
+    public float slideDuration = 0.6f;
+    public float slideColliderHeight = 0.7f;
+    private float normalColliderHeight;
+    private bool isSliding;
+    private float slideTimer;
+    private CapsuleCollider capsule;
+
     private Rigidbody rb;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        capsule = GetComponent<CapsuleCollider>();
+
         rb.freezeRotation = true;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
+
+        normalColliderHeight = capsule.height;
 
         UpdateLaneTarget();
     }
 
-    // -----------------------
-    // INPUT
-    // -----------------------
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
@@ -48,16 +57,18 @@ public class LaneRunnerRB : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
             Jump();
+        
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+            Debug.Log("S");
+            Slide();
     }
 
-    // -----------------------
-    // PHYSICS
-    // -----------------------
     void FixedUpdate()
     {
         CheckGround();
         HandleLaneMovement();
         HandleHoverAndFall();
+        HandleSlide();
     }
 
     // -----------------------
@@ -111,7 +122,7 @@ public class LaneRunnerRB : MonoBehaviour
     // -----------------------
     void Jump()
     {
-        if (!isGrounded) return;
+        if (!isGrounded || isSliding) return;
 
         isJumping = true;
         isHovering = true;
@@ -146,7 +157,35 @@ public class LaneRunnerRB : MonoBehaviour
     }
 
     // -----------------------
-    // DEBUG (OPTIONAL)
+    // SLIDE 
+    // -----------------------
+    void Slide()
+    {
+        if (!isGrounded || isSliding) return;
+
+        isSliding = true;
+        slideTimer = slideDuration;
+
+        capsule.height = slideColliderHeight; 
+        capsule.center = new Vector3(capsule.center.x, slideColliderHeight / 2f, capsule.center.z);
+    }
+
+    void HandleSlide()
+    {
+        if (!isSliding) return;
+
+        slideTimer -= Time.fixedDeltaTime;
+
+        if (slideTimer <= 0f)
+        {
+            isSliding = false;
+            capsule.height = normalColliderHeight;
+            capsule.center = new Vector3(capsule.center.x, normalColliderHeight / 2f, capsule.center.z);
+        }
+    }
+
+    // -----------------------
+    // DEBUG
     // -----------------------
     void OnDrawGizmosSelected()
     {
