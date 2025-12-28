@@ -1,8 +1,13 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
 public class LaneRunnerRB : MonoBehaviour
 {
+    Animator animator;
+    
+    
+    
     [Header("Lane Settings")]
     public float laneDistance = 2f;
     public float laneSwitchSpeed = 12f;
@@ -34,6 +39,11 @@ public class LaneRunnerRB : MonoBehaviour
 
     private Rigidbody rb;
 
+    private void Start()
+    {
+        animator = GetComponent<Animator>();
+    }
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -57,10 +67,14 @@ public class LaneRunnerRB : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
             Jump();
+            
         
+
         if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-            Debug.Log("S");
+        {
+           
             Slide();
+        }
     }
 
     void FixedUpdate()
@@ -123,12 +137,16 @@ public class LaneRunnerRB : MonoBehaviour
     void Jump()
     {
         if (!isGrounded || isSliding) return;
-
+        
+        animator.SetTrigger("Jump");
+        
         isJumping = true;
         isHovering = true;
 
         rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        
+        
 
         hoverTimer = hoverTime;
     }
@@ -163,6 +181,8 @@ public class LaneRunnerRB : MonoBehaviour
     {
         if (!isGrounded || isSliding) return;
 
+        animator.SetTrigger("Roll");
+        
         isSliding = true;
         slideTimer = slideDuration;
 
