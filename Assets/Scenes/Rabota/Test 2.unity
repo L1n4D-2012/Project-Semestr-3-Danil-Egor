@@ -662,7 +662,7 @@ MonoBehaviour:
   laneDistance: 2
   laneSwitchSpeed: 12
   jumpForce: 5
-  hoverTime: 0.18
+  hoverTime: 0.15
   fallImpulse: 18
   groundLayer:
     serializedVersion: 2
