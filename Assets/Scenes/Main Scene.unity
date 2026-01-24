@@ -3281,7 +3281,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Test 2
+          m_StringArgument: "1 \u0415\u0433\u043E\u0440"
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1604764529

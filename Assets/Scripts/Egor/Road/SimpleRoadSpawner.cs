@@ -31,7 +31,6 @@ public class SimpleRoadSpawner : MonoBehaviour
 
         for (int i = 0; i < numberOfTiles; i++)
         {
-            // ВАЖНО: Передаем индекс 'i' в функцию спавна
             SpawnTile(i * roadLength, i);
         }
     }
@@ -49,7 +48,17 @@ public class SimpleRoadSpawner : MonoBehaviour
         if (activeRoads.Count > 0)
         {
             GameObject firstTile = activeRoads[0];
-            if (firstTile.transform.position.z < -roadLength - 15f) // Чуть увеличил дистанцию удаления
+
+            // ИСПРАВЛЕНИЕ: Проверяем, существует ли еще объект.
+            // Если он был удален другим скриптом, убираем его из списка и выходим.
+            if (firstTile == null)
+            {
+                activeRoads.RemoveAt(0);
+                return;
+            }
+
+            // Если объект существует, работаем с ним как обычно (Строка 52 была тут)
+            if (firstTile.transform.position.z < -roadLength - 15f)
             {
                 RecycleTile();
             }
@@ -58,27 +67,29 @@ public class SimpleRoadSpawner : MonoBehaviour
 
     void RecycleTile()
     {
+        // Получаем первую и последнюю плитки ДО того, как что-то удалить
         GameObject oldTile = activeRoads[0];
         GameObject lastTile = activeRoads[activeRoads.Count - 1];
 
+        // Обязательно проверяем lastTile на null, чтобы избежать ошибки при расчетах
+        if (lastTile == null) return;
+
         float newSpawnZ = lastTile.transform.position.z + roadLength;
 
+        // Удаляем из списка и уничтожаем
         activeRoads.RemoveAt(0);
         Destroy(oldTile);
 
-        // При переработке плитки индекс уже большой, так что это не старт (isSafeZone = false)
+        // Спавним новую
         SpawnTile(newSpawnZ, 100);
     }
 
-    // Добавил параметр tileIndex
     void SpawnTile(float zPos, int tileIndex)
     {
         GameObject newRoad = Instantiate(roadPrefab, new Vector3(0, 0, zPos), Quaternion.identity);
         activeRoads.Add(newRoad);
 
         bool isFlying = PlayerJetpack.instance != null && PlayerJetpack.instance.isFlying;
-
-        // Если это первые 2 плитки (0 и 1), включаем Безопасную Зону (true)
         bool isSafeZone = (tileIndex < 2);
 
         newRoad.GetComponent<RoadTile>().SpawnObstacles(isFlying, isSafeZone);
@@ -88,9 +99,10 @@ public class SimpleRoadSpawner : MonoBehaviour
     {
         foreach (var road in activeRoads)
         {
-            if (road.transform.position.z < -5f) continue;
+            // Еще одна защита: пропускаем удаленные объекты
+            if (road == null) continue;
 
-            // При обновлении дороги мы считаем, что это уже не старт игры
+            if (road.transform.position.z < -5f) continue;
             road.GetComponent<RoadTile>().SpawnObstacles(isFlying, false);
         }
     }
