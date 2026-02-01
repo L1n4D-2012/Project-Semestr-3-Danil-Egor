@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,11 @@ public class UniversalPanelManager : MonoBehaviour
     public List<PanelItem> panels = new List<PanelItem>();
 
     private Dictionary<string, GameObject> panelDict;
+
+    private void Start()
+    {
+        Time.timeScale = 1;
+    }
 
     [System.Serializable]
     public class PanelItem
@@ -34,11 +40,13 @@ public class UniversalPanelManager : MonoBehaviour
     {
         foreach (var panel in panelDict.Values)
             panel.SetActive(false);
+            Time.timeScale = 0;
 
         if (panelDict.ContainsKey(panelName))
             panelDict[panelName].SetActive(true);
         else
             Debug.LogWarning("Панель не знайдена: " + panelName);
+        
     }
 
     /// <summary>
