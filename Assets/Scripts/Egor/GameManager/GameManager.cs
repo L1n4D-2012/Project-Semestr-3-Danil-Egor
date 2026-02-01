@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,6 +9,8 @@ public class GameManager : MonoBehaviour
 
     public int targetFrameRate = 120;
     public bool disableShadowsOnMobile = true;
+
+    
 
     void Awake()
     {
