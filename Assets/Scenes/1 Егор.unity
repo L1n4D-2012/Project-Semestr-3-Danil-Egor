@@ -10363,7 +10363,7 @@ MonoBehaviour:
   animator: {fileID: 582540781}
   laneDistance: 2
   laneSwitchSpeed: 20
-  jumpForce: 8
+  jumpForce: 4.5
   hoverTime: 0.18
   extraGravity: 30
   fallImpulse: 18
@@ -21583,7 +21583,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 580598598}
         m_TargetAssemblyTypeName: UniversalPanelManager, Assembly-CSharp
-        m_MethodName: OpenPanel
+        m_MethodName: ClosePanel
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

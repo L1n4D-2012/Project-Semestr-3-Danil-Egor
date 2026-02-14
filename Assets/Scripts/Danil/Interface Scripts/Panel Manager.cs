@@ -48,6 +48,18 @@ public class UniversalPanelManager : MonoBehaviour
             Debug.LogWarning("Панель не знайдена: " + panelName);
         
     }
+    public void ClosePanel(string panelName)
+    {
+        foreach (var panel in panelDict.Values)
+            panel.SetActive(false);
+            Time.timeScale = 1;
+
+        if (panelDict.ContainsKey(panelName))
+            panelDict[panelName].SetActive(true);
+        else
+            Debug.LogWarning("Панель не знайдена: " + panelName);
+        
+    }
 
     /// <summary>
     /// Закрити всі панелі
