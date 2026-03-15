@@ -463,13 +463,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7197103878649344826}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.92, y: 0, z: -2.44}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 4.9199996, y: 0.00000014305115, z: -2.44}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2426637141648883142}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &7400361871045034367
 GameObject:
   m_ObjectHideFlags: 0
@@ -522,10 +522,8 @@ MonoBehaviour:
   - {fileID: 1592441825376106508}
   leftDecorPoints:
   - {fileID: 6905518339823342521}
-  - {fileID: 8428647081174853977}
   rightDecorPoints:
   - {fileID: 1827398122836582432}
-  - {fileID: 7314504324370676067}
   jumpableObstacles:
   - {fileID: 4311010213305465634, guid: 84062c9556b3cef4f8aa9a210cba155b, type: 3}
   - {fileID: 2051354519210185303, guid: bd54396f614833c4aac609531580219e, type: 3}
@@ -536,14 +534,14 @@ MonoBehaviour:
   - {fileID: 292426699999352426, guid: 965965124f638dd4dbc21a204a80876a, type: 3}
   - {fileID: 158352753535455414, guid: 66498b191d3c64e4ea56d4ed50eabbbd, type: 3}
   decorPrefabs:
-  - {fileID: 732799653215874620, guid: c2e113cd6395fbb4f879f9eeaff225ec, type: 3}
-  - {fileID: 3552547287861534730, guid: 5215971f383b3354b93f853e9b9f4abb, type: 3}
-  - {fileID: 1812436991245505062, guid: 596557109d929d443a1db8ece53c8ae1, type: 3}
-  - {fileID: 5104795218644283029, guid: b38f5b590b91d4e48a126d722896fd60, type: 3}
-  - {fileID: 8863401132189471040, guid: a4096e55654c2c34db8278fc062738a8, type: 3}
-  - {fileID: 1336695135242172844, guid: b6cc55a20659e1544af5c6b676cc1632, type: 3}
-  - {fileID: 3140656822258070243, guid: 11e72242f385d85429bbeb059241f4da, type: 3}
-  - {fileID: 2323364943475123365, guid: 15f26c55b72bb724da45119747d2ad3d, type: 3}
+  - {fileID: 297545487974922140, guid: 691022208b1b2a544b08ae4689398ba8, type: 3}
+  - {fileID: 410184132305771489, guid: fc990b8a6e0918c4eaec4d5d2a38f125, type: 3}
+  - {fileID: 8189951318539892418, guid: 78acf9149b70be840ba7654c0a0c3b7f, type: 3}
+  - {fileID: 5070344771057133799, guid: 565543c677c8cda42b6ddd16b7f59ff3, type: 3}
+  - {fileID: 6806948091833826155, guid: 2624d4e58c6ccbf42b05177cd7b563b6, type: 3}
+  - {fileID: 6806948091833826155, guid: 2624d4e58c6ccbf42b05177cd7b563b6, type: 3}
+  - {fileID: 6806948091833826155, guid: 2624d4e58c6ccbf42b05177cd7b563b6, type: 3}
+  - {fileID: 6806948091833826155, guid: 2624d4e58c6ccbf42b05177cd7b563b6, type: 3}
   coinPrefab: {fileID: 8716862881270331998, guid: f20ada6c28f89ff468ed4daa6537bb0a, type: 3}
   powerupPrefabs:
   - {fileID: 2926421849433979157, guid: e11db449f449f3149b02f353fadc45cb, type: 3}
