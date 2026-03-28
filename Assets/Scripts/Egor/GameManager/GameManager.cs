@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
     {
         if (Wallet.instance != null)
         {
-           // Wallet.instance.ResetMoney();
+            Wallet.instance.ResetMoney();
         }
 
         if (gameOverCanvas != null)
