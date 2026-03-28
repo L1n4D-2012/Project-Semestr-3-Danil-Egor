@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class Wallet : MonoBehaviour
 {
-    WalletInMain walletInMain;
+   
     public static Wallet instance;
     public int coins;
     public Text coinText;
@@ -20,7 +20,7 @@ public class Wallet : MonoBehaviour
 
         // ��������� ����������� ������
         coins = PlayerPrefs.GetInt("Coins", 0);
-        PlayerPrefs.SetInt("CoinsMenu", coins);
+       
         UpdateUI();
     }
 
@@ -40,7 +40,6 @@ public class Wallet : MonoBehaviour
     {
         coins += amount * coinMultiplier;
         PlayerPrefs.SetInt("Coins", coins);
-        PlayerPrefs.Save();
         UpdateUI();
     }
 
