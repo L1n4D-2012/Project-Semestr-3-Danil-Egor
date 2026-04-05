@@ -10467,7 +10467,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 582540781}
-  laneDistance: 3
+  laneDistance: 2.5
   laneSwitchSpeed: 20
   jumpForce: 6
   hoverTime: 0.18

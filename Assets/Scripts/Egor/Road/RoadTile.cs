@@ -1,17 +1,25 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class RoadTile : MonoBehaviour
 {
+    // --- СТАТИЧЕСКАЯ ПАМЯТЬ (Общая для всех кусков дороги) ---
+    // 0 = Центр, -1 = Лево, 1 = Право
     public static int lastJetpackLane = 0;
+    // ---------------------------------------------------------
 
     [Header("Points")]
     public Transform[] spawnPoints;
+    public Transform[] leftDecorPoints;
+    public Transform[] rightDecorPoints;
 
     [Header("Obstacles")]
     public GameObject[] jumpableObstacles;
     public GameObject[] slidableObstacles;
     public GameObject[] impassableObstacles;
+
+    [Header("Decor")]
+    public GameObject[] decorPrefabs;
 
     [Header("Items")]
     public GameObject coinPrefab;
@@ -19,23 +27,17 @@ public class RoadTile : MonoBehaviour
 
     [Header("Settings")]
     public float laneDistance = 2f;
-    public int coinsPerLine = 20;
+    public int coinsPerLine = 10;
     public float coinSpacing = 1.5f;
     public float groundCoinHeight = 1f;
     public float airCoinHeight = 7f;
 
-    private const int AIR_COIN_COUNT = 40;
-    private const float TILE_LENGTH = 60f;
-    private const float POWERUP_CHANCE = 0.2f;
-    private const float POWERUP_SPAWN_CHANCE = 0.15f;
-    private const float TURN_CHANCE = 0.5f;
-
-    private readonly List<GameObject> spawnedObjects = new List<GameObject>();
-    private List<GameObject> cachedObstacles;
+    private List<GameObject> spawnedObjects = new List<GameObject>();
 
     public void SpawnObstacles(bool isFlying, bool isSafeZone = false)
     {
         ClearOldObjects();
+        SpawnDecor();
 
         if (isSafeZone) return;
 
@@ -45,7 +47,7 @@ public class RoadTile : MonoBehaviour
         }
         else
         {
-            var blockedLanes = new List<int>();
+            List<int> blockedLanes = new List<int>();
             SpawnBarriers(blockedLanes);
             SpawnStraightCoinsOnGround(blockedLanes);
             SpawnPowerups(blockedLanes);
@@ -55,8 +57,9 @@ public class RoadTile : MonoBehaviour
     void ClearOldObjects()
     {
         foreach (var obj in spawnedObjects)
+        {
             if (obj != null) Destroy(obj);
-
+        }
         spawnedObjects.Clear();
     }
 
@@ -67,24 +70,51 @@ public class RoadTile : MonoBehaviour
         int startLane = lastJetpackLane;
         int targetLane = startLane;
 
-        if (Random.value > TURN_CHANCE)
-            targetLane = (startLane == 0) ? (Random.value > 0.5f ? 1 : -1) : 0;
-
-        float step = TILE_LENGTH / AIR_COIN_COUNT;
-
-        for (int i = 0; i < AIR_COIN_COUNT; i++)
+        // Шанс поворота (50% прямо, 50% поворот)
+        if (Random.value > 0.5f)
         {
-            float t = (float)i / (AIR_COIN_COUNT - 1);
-            float x = Mathf.Lerp(startLane * laneDistance, targetLane * laneDistance, t);
-            float z = -30f + (i * step);
+            if (startLane == 0) targetLane = (Random.value > 0.5f) ? 1 : -1;
+            else targetLane = 0;
+        }
 
-            Vector3 pos = transform.position + new Vector3(x, airCoinHeight, z);
-            bool isLast = i == AIR_COIN_COUNT - 1;
+        // --- НАСТРОЙКИ ДЛИНЫ И ПЛОТНОСТИ ---
+        // Увеличиваем кол-во монет, чтобы линия была сплошной
+        // Раньше было 10, ставим 15 или 20, чтобы заполнить ВЕСЬ тайл
+        int coinsCount = 20;
 
-            if (isLast && Random.value < POWERUP_CHANCE && powerupPrefabs.Length > 0)
-                SpawnPrefab(powerupPrefabs[Random.Range(0, powerupPrefabs.Length)], pos);
+        // Вычисляем шаг так, чтобы монеты равномерно покрыли всю длину тайла (30м)
+        // 30 метров / 20 монет = 1.5 метра между монетами
+        float step = 30f / coinsCount;
+
+        for (int i = 0; i < coinsCount; i++)
+        {
+            // t идет от 0 до 1
+            float t = (float)i / (float)(coinsCount - 1);
+
+            // Плавный переход X
+            float currentLaneX = Mathf.Lerp(startLane * laneDistance, targetLane * laneDistance, t);
+
+            // --- ГЛАВНОЕ ИСПРАВЛЕНИЕ Z (УБИРАЕМ РАЗРЫВЫ) ---
+            // Спавним монеты от самого начала (-15) до самого конца (+15) тайла.
+            // Так как тайлы стоят встык, линии монет тоже состыкуются идеально.
+            float zLocal = -15f + (i * step);
+
+            Vector3 spawnPos = transform.position + new Vector3(currentLaneX, airCoinHeight, zLocal);
+
+            // 20% шанс бонуса на самой последней монете
+            if (i == coinsCount - 1 && Random.value < 0.2f && powerupPrefabs.Length > 0)
+            {
+                GameObject powerup = powerupPrefabs[Random.Range(0, powerupPrefabs.Length)];
+                GameObject obj = Instantiate(powerup, spawnPos, powerup.transform.rotation, transform);
+                obj.transform.localScale = powerup.transform.localScale;
+                spawnedObjects.Add(obj);
+            }
             else
-                SpawnPrefab(coinPrefab, pos);
+            {
+                GameObject coin = Instantiate(coinPrefab, spawnPos, coinPrefab.transform.rotation, transform);
+                coin.transform.localScale = coinPrefab.transform.localScale;
+                spawnedObjects.Add(coin);
+            }
         }
 
         lastJetpackLane = targetLane;
@@ -92,32 +122,33 @@ public class RoadTile : MonoBehaviour
 
     void SpawnBarriers(List<int> blockedLanes)
     {
-        if (spawnPoints.Length == 0) return;
+        List<GameObject> allObstacles = new List<GameObject>();
+        if (jumpableObstacles != null) allObstacles.AddRange(jumpableObstacles);
+        if (slidableObstacles != null) allObstacles.AddRange(slidableObstacles);
+        if (impassableObstacles != null) allObstacles.AddRange(impassableObstacles);
 
-        if (cachedObstacles == null)
+        if (spawnPoints.Length == 0 || allObstacles.Count == 0) return;
+
+        List<Transform> availablePoints = new List<Transform>(spawnPoints);
+        int obstaclesToSpawn = Random.Range(1, 3);
+
+        for (int i = 0; i < obstaclesToSpawn; i++)
         {
-            cachedObstacles = new List<GameObject>();
-            if (jumpableObstacles != null) cachedObstacles.AddRange(jumpableObstacles);
-            if (slidableObstacles != null) cachedObstacles.AddRange(slidableObstacles);
-            if (impassableObstacles != null) cachedObstacles.AddRange(impassableObstacles);
-        }
+            if (availablePoints.Count == 0) break;
 
-        if (cachedObstacles.Count == 0) return;
-
-        var available = new List<Transform>(spawnPoints);
-        int count = Random.Range(1, 3);
-
-        for (int i = 0; i < count && available.Count > 0; i++)
-        {
-            int rnd = Random.Range(0, available.Count);
-            Transform point = available[rnd];
-            available.RemoveAt(rnd);
+            int rnd = Random.Range(0, availablePoints.Count);
+            Transform point = availablePoints[rnd];
+            availablePoints.RemoveAt(rnd);
 
             int lane = GetLaneIndex(point.position);
-            if (blockedLanes.Contains(lane)) continue;
-
-            blockedLanes.Add(lane);
-            SpawnPrefab(cachedObstacles[Random.Range(0, cachedObstacles.Count)], point.position);
+            if (!blockedLanes.Contains(lane))
+            {
+                blockedLanes.Add(lane);
+                GameObject obsPrefab = allObstacles[Random.Range(0, allObstacles.Count)];
+                GameObject obj = Instantiate(obsPrefab, point.position, obsPrefab.transform.rotation, transform);
+                obj.transform.localScale = obsPrefab.transform.localScale;
+                spawnedObjects.Add(obj);
+            }
         }
     }
 
@@ -125,46 +156,71 @@ public class RoadTile : MonoBehaviour
     {
         if (coinPrefab == null) return;
 
-        int chosenLane = GetRandomFreeLane(blockedLanes);
-        if (chosenLane == int.MinValue) return;
-
-        float x = chosenLane * laneDistance;
-
-        // ���������� ����� ����� �� ����� �������������
-        float totalLength = (coinsPerLine - 1) * coinSpacing;
-        float zStart = -totalLength / 2f;
-
-        for (int i = 0; i < coinsPerLine; i++)
+        List<int> freeLanes = new List<int>();
+        for (int i = -1; i <= 1; i++)
         {
-            float z = zStart + (i * coinSpacing);
-            SpawnPrefab(coinPrefab, transform.position + new Vector3(x, groundCoinHeight, z));
+            if (!blockedLanes.Contains(i)) freeLanes.Add(i);
+        }
+
+        if (freeLanes.Count > 0)
+        {
+            int chosenLane = freeLanes[Random.Range(0, freeLanes.Count)];
+            float xPos = chosenLane * laneDistance;
+
+            for (int i = 0; i < coinsPerLine; i++)
+            {
+                float zPos = -5f + (i * coinSpacing);
+                Vector3 coinPos = transform.position + new Vector3(xPos, groundCoinHeight, zPos);
+
+                GameObject coin = Instantiate(coinPrefab, coinPos, coinPrefab.transform.rotation, transform);
+                coin.transform.localScale = coinPrefab.transform.localScale;
+                spawnedObjects.Add(coin);
+            }
         }
     }
+
     void SpawnPowerups(List<int> blockedLanes)
     {
-        if (powerupPrefabs.Length == 0 || Random.value > POWERUP_SPAWN_CHANCE) return;
+        if (powerupPrefabs.Length == 0) return;
+        if (Random.value > 0.15f) return;
 
-        int lane = GetRandomFreeLane(blockedLanes);
-        if (lane == int.MinValue) return;
-
-        Vector3 pos = transform.position + new Vector3(lane * laneDistance, 1.5f, 0);
-        SpawnPrefab(powerupPrefabs[Random.Range(0, powerupPrefabs.Length)], pos);
-    }
-
-    void SpawnPrefab(GameObject prefab, Vector3 position)
-    {
-        GameObject obj = Instantiate(prefab, position, prefab.transform.rotation, transform);
-        obj.transform.localScale = prefab.transform.localScale;
-        spawnedObjects.Add(obj);
-    }
-
-    int GetRandomFreeLane(List<int> blockedLanes)
-    {
-        var free = new List<int>();
+        List<int> freeLanes = new List<int>();
         for (int i = -1; i <= 1; i++)
-            if (!blockedLanes.Contains(i)) free.Add(i);
+        {
+            if (!blockedLanes.Contains(i)) freeLanes.Add(i);
+        }
 
-        return free.Count > 0 ? free[Random.Range(0, free.Count)] : int.MinValue;
+        if (freeLanes.Count > 0)
+        {
+            int lane = freeLanes[Random.Range(0, freeLanes.Count)];
+            float xPos = lane * laneDistance;
+
+            Vector3 pos = transform.position + new Vector3(xPos, 1.5f, 0);
+            GameObject powerup = powerupPrefabs[Random.Range(0, powerupPrefabs.Length)];
+            GameObject obj = Instantiate(powerup, pos, powerup.transform.rotation, transform);
+            obj.transform.localScale = powerup.transform.localScale;
+            spawnedObjects.Add(obj);
+        }
+    }
+
+    void SpawnDecor()
+    {
+        if (decorPrefabs.Length == 0) return;
+        SpawnDecorAtPoints(leftDecorPoints);
+        SpawnDecorAtPoints(rightDecorPoints);
+    }
+
+    void SpawnDecorAtPoints(Transform[] points)
+    {
+        foreach (var p in points)
+        {
+            if (p.childCount == 0 && Random.value > 0.4f)
+            {
+                GameObject decor = decorPrefabs[Random.Range(0, decorPrefabs.Length)];
+                GameObject obj = Instantiate(decor, p.position, decor.transform.rotation, p);
+                obj.transform.localScale = decor.transform.localScale;
+            }
+        }
     }
 
     int GetLaneIndex(Vector3 position)
@@ -176,3 +232,5 @@ public class RoadTile : MonoBehaviour
         return 0;
     }
 }
+
+
